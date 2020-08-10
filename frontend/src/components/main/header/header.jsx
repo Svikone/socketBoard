@@ -5,14 +5,16 @@ import { connect } from "react-redux";
 import { friendRequest, friendRequestSucces } from "../../../store/main/action";
 
 class Header extends React.Component {
+  constructor(props) {
+    super(props);
+    this.onSubmit = this.onSubmit.bind(this);
+  }
   componentDidMount() {
     this.props.friendRequestSucces();
   }
 
   onSubmit(values, { resetForm }) {
-    console.log(this.props);
     this.props.friendRequest(values);
-    console.log(this);
     resetForm({});
   }
 

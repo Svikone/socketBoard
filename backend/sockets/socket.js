@@ -3,23 +3,26 @@ const User = require('../models/user');
 module.exports = (io) => { 
     const users = [];
     io.on('connection', (socket) => {
-        const userId = socket.decoded.userId;
+        const { userId } = socket.decoded;
         users.push({ userId, socketId: socket.id })
         console.log(users)
-        socket.on('friendRequest', async (req, res) => { 
-            const id = socket.decoded.userId;
+        socket.on('friendRequest', async (data) => { 
+            const { id } = socket.decoded.userId;
+            const { nameFriend } = data
             try { 
+                socket.emit('friendRequest', {
+                            message: `Вас хочит добавить в друзья `,
+                        });
                 const user = await User.findOne({_id: id});
-                const friend = await User.findOne({ name: req.nameFriend });
+                const friend = await User.findOne({ name: nameFriend });
                 console.log(friend)
                 
                 if (friend) {
-                    let onlineUser = users.find((user) => {
-                        return user.userId == friend._id
-                    })
-                    
+                    let onlineUser = users.find(user => user.userId == friend._id);
+
                     if (onlineUser) {
-                        socket.emit('friendRequest', {
+                        console.log("emit")
+                        socket.emit('friendInvitesList', {
                             message: `Вас хочит добавить в друзья ${user.name}`,
                         });
                     }

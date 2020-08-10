@@ -25,7 +25,6 @@ const socket = io(environment.apiUrl, {
 
 function* friendRequestWorker(nameFriend) {
     // const dispatch = yield put(actions.getDispatch());
-    try {
       // socket.on('friendRequest', (response) => {
       //   // dispatch(actions.gameAwaitEnemySuccess());
       //   if (response.success) {
@@ -34,24 +33,17 @@ function* friendRequestWorker(nameFriend) {
       //   //   history.push(`/lobby/${response.gameId}`);
       //   }
       // });
-      yield socket.emit('friendRequest', {nameFriend: "ao" });
-    } catch (e) {
-    }
+    yield socket.emit('friendRequest', {nameFriend: "ao" });
 }
 
 function* friendRequestSuccessWorker() {
-    // const dispatch = yield put(actions.getDispatch());
-    try {
-      socket.on('friendRequest', (response) => {
-        // dispatch(actions.gameAwaitEnemySuccess());
-        if (response.success) {
-          console.log(response)
+  yield socket.on('friendInvitesList', (response) => {
+    console.log(response)
+    console.log("Э")
+    if (response.success) {
 
-        //   history.push(`/lobby/${response.gameId}`);
-        }
-      });
-    } catch (e) {
     }
+  });
 }
   
 
