@@ -23,7 +23,8 @@ const userSchema = new Schema({
       _id: ObjectId ,
       name: String 
     }
-  ]
+  ],
+
 });
 
 module.exports = model('users', userSchema);

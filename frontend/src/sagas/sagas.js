@@ -18,12 +18,13 @@ function* loginWorker(user) {
 }
 
 const socket = io(environment.apiUrl, {
+  
     query: {
       token: localStorage.getItem('token'),
     },
-  });
+  },socket.disconnect());
 
-function* friendRequestWorker(nameFriend) {
+function* friendRequestWorker(data) {
     // const dispatch = yield put(actions.getDispatch());
       // socket.on('friendRequest', (response) => {
       //   // dispatch(actions.gameAwaitEnemySuccess());
@@ -33,7 +34,9 @@ function* friendRequestWorker(nameFriend) {
       //   //   history.push(`/lobby/${response.gameId}`);
       //   }
       // });
-    yield socket.emit('friendRequest', {nameFriend: "ao" });
+    console.log(data.payload.name)
+
+    yield socket.emit('friendRequest', {nameFriend: data.payload.name });
 }
 
 function* friendRequestSuccessWorker() {

@@ -1,19 +1,49 @@
 const User = require('../models/user');
+const ExpectedFriends = require('../models/expectedFriends');
 
 module.exports = (io) => { 
     const users = [];
-    io.on('connection', (socket) => {
+    io.on('connection', async (socket) => {
         const { userId } = socket.decoded;
+        const myId = users.find(user => user.userId == userId);
+        if (myId) {
+            socket.emit('friendInvitesList', {
+                message: `error`,
+            });
+            return 
+        } else {
+            try {
+                const possibleАriends = await ExpectedFriends.find({expectedFriendID: userId});
+                console.log(possibleАriends)
+                if (possibleАriends.length>0) {
+                    socket.emit('friendInvitesList', {
+                        message: `Вас хочит добавить в друзья`,
+                        possibleАriends
+                    });
+                    await ExpectedFriends.deleteMany({ expectedFriendID: userId });
+                }
+            } catch (e) {
+                
+            }
+        }
         users.push({ userId, socketId: socket.id })
         console.log(users)
+
+        socket.on('disconnect', function (msg) {
+            users.filter(user => user.userId == userId);
+            console.log(users)
+        })
+
         socket.on('friendRequest', async (data) => { 
-            const { id } = socket.decoded.userId;
             const { nameFriend } = data
             try { 
-                socket.emit('friendRequest', {
-                            message: `Вас хочит добавить в друзья `,
-                        });
-                const user = await User.findOne({_id: id});
+                const user = await User.findOne({ _id: userId });
+                if (user.name == nameFriend) {
+                    socket.emit('friendInvitesList', {
+                        message: `Вы не можете добавить себя в друзья`,
+                    });
+                    return
+                }
                 const friend = await User.findOne({ name: nameFriend });
                 console.log(friend)
                 
@@ -25,9 +55,12 @@ module.exports = (io) => {
                         socket.emit('friendInvitesList', {
                             message: `Вас хочит добавить в друзья ${user.name}`,
                         });
+                    } else {
+                        const expectedFriend = new ExpectedFriends({
+                            name: user.name, expectedFriendID: friend._id
+                        })
+                        await expectedFriend.save();
                     }
-
-
                 }
             } catch (e) {
                 
