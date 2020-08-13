@@ -16,7 +16,7 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const sagaMiidleware = createSagaMiddleware()
-const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(logger, sagaMiidleware)));
+export const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(logger, sagaMiidleware)));
 sagaMiidleware.run(watchLoadData)
 
 function App() {

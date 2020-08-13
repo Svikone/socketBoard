@@ -3,6 +3,7 @@ import { Navbar, Nav, Form, FormControl, Button } from "react-bootstrap";
 import { Formik } from "formik";
 import { connect } from "react-redux";
 import { friendRequest, friendRequestSucces } from "../../../store/main/action";
+import { Link } from "react-router-dom";
 
 class Header extends React.Component {
   constructor(props) {
@@ -25,7 +26,9 @@ class Header extends React.Component {
         <Nav className="mr-auto">
           <Nav.Link href="#home">Home</Nav.Link>
           <Nav.Link href="#features">Features</Nav.Link>
-          <Nav.Link href="#pricing">Pricing</Nav.Link>
+          <Link to="main/friends" className="nav-link">
+            Друзья
+          </Link>
         </Nav>
         <Formik
           initialValues={{

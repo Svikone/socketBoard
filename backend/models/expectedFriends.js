@@ -3,7 +3,7 @@ const ObjectId = Schema.Types.ObjectId
 
 const expectedFriendsSchema = new Schema({
   name: {
-    type: ObjectId
+    type: String
   },
 
   expectedFriendID: {

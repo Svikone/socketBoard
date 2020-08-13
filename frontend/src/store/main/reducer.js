@@ -1,7 +1,8 @@
-import { FRIEND_REQUEST, FRIEND_REQUEST_ERROR, FRIEND_REQUEST_SUCCESS} from "./action";
+import { FRIEND_REQUEST, FRIEND_REQUEST_ERROR, FRIEND_REQUEST_SUCCESS, POSSIBLE_FRIENDS} from "./action";
 
 const defaultState = {
-    name: ""
+    name: "",
+    friends: {}
 }
 
 export const mainReducer = (state = defaultState, action) => {
@@ -16,6 +17,11 @@ export const mainReducer = (state = defaultState, action) => {
             ...state,
             // token: action.payload
             }
+        case POSSIBLE_FRIENDS:
+        return {
+            ...state,
+            friends: action.payload,
+        }
         case FRIEND_REQUEST_ERROR:
         return {
             ...state,

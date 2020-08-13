@@ -3,7 +3,8 @@ import { LOGIN, loginSucces, loginError } from '../store/auth/login/actions';
 import httpServices from '../services/http.service';
 import io from 'socket.io-client';
 import environment from '../environment/environment';
-import { FRIEND_REQUEST, FRIEND_REQUEST_SUCCESS } from '../store/main/action';
+import { FRIEND_REQUEST, FRIEND_REQUEST_SUCCESS, possibleFriends } from '../store/main/action';
+import { store } from '../App';
 
 function* loginWorker(user) {
     try {
@@ -22,29 +23,16 @@ const socket = io(environment.apiUrl, {
     query: {
       token: localStorage.getItem('token'),
     },
-  },socket.disconnect());
+  });
 
 function* friendRequestWorker(data) {
-    // const dispatch = yield put(actions.getDispatch());
-      // socket.on('friendRequest', (response) => {
-      //   // dispatch(actions.gameAwaitEnemySuccess());
-      //   if (response.success) {
-      //     console.log(response)
-
-      //   //   history.push(`/lobby/${response.gameId}`);
-      //   }
-      // });
-    console.log(data.payload.name)
-
-    yield socket.emit('friendRequest', {nameFriend: data.payload.name });
+  yield socket.emit('friendRequest', {nameFriend: data.payload.name });
 }
 
 function* friendRequestSuccessWorker() {
   yield socket.on('friendInvitesList', (response) => {
-    console.log(response)
-    console.log("Э")
-    if (response.success) {
-
+    if (response.possibleАriends) {
+      store.dispatch(possibleFriends(response))
     }
   });
 }
@@ -55,5 +43,7 @@ export function* watchLoadData() {
   yield takeEvery(LOGIN, loginWorker)
   yield takeEvery(FRIEND_REQUEST_SUCCESS, friendRequestSuccessWorker)
 }
+
+
 
 
