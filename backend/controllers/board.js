@@ -21,8 +21,11 @@ exports.getBoardByUser = async (req, res) => {
         const board = await Board.find({
             'users': { $elemMatch: { '_id': userId } }
         })
+        if (!board) {
+            return res.status(500).json({message: 'your application is empty'})
+        }
         
-    return res.status(200).json({board})
+        return res.status(200).json({board})
 
     } catch (e) {
         res.send(e);
