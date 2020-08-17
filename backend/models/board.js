@@ -1,14 +1,16 @@
 const { Schema, model } = require('mongoose');
 const ObjectId = Schema.Types.ObjectId
 
-const expectedFriendsSchema = new Schema({
+const boardSchema = new Schema({
   name: {
     type: String
   },
 
-  expectedFriendID: {
-    type: ObjectId
-  },
+    users: [
+        {
+            _id: ObjectId
+        }
+    ],   
 
   friendWhoAppliedId: {
     type: ObjectId
@@ -16,4 +18,4 @@ const expectedFriendsSchema = new Schema({
   
 });
 
-module.exports = model('expectedFriends', expectedFriendsSchema);
+module.exports = model('boards', boardSchema);

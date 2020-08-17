@@ -2,35 +2,61 @@ import React from "react";
 import { connect } from "react-redux";
 import { ListGroup, Card, Button } from "react-bootstrap";
 import Item from "./item/item";
+import ItemFriends from "./itemFriends/itemFriend";
 import "./friends.scss";
+import { getUser } from "../../../store/main/action";
 
-const Friends = (props) => {
-  console.log(props.state);
-  return (
-    <div className="">
-      <Card>
-        <h2>Возможные друзья</h2>
-        <ListGroup variant="flush">
-          {/* {props.items.map((item, i) => (
-            <Card key={i} item={item} />
-          ))} */}
-          <Item />
-          <ListGroup.Item>Dapibus ac facilisis in</ListGroup.Item>
-          <ListGroup.Item>Vestibulum at eros</ListGroup.Item>
-        </ListGroup>
-      </Card>
-    </div>
-  );
-};
+class Friends extends React.Component {
+  componentDidMount() {
+    this.props.getUser();
+  }
+
+  render() {
+    console.log(this.props.friends);
+    return (
+      <div className="">
+        <Card>
+          {this.props.friendRequestItems ? (
+            <div className="friendsRequest">
+              <h2>Возможные друзья</h2>
+              <ListGroup variant="flush">
+                {this.props.friendRequestItems.map((item, i) => (
+                  <Item key={i} item={item} />
+                ))}
+              </ListGroup>
+            </div>
+          ) : (
+            <h2>Зайавки в друзья отсутствуют</h2>
+          )}
+          {this.props.friends ? (
+            <div className="friends">
+              <h2>Ваши друзья</h2>
+              <ListGroup variant="flush">
+                {this.props.friends.map((item, i) => (
+                  <ItemFriends key={i} item={item} />
+                ))}
+              </ListGroup>
+            </div>
+          ) : (
+            <h2>У вас пока нет друзей</h2>
+          )}
+        </Card>
+      </div>
+    );
+  }
+}
 
 const mapStateToProps = (state) => {
   return {
-    items: state.main.friends.possibleАriends,
+    friendRequestItems: state.main.friends.possibleАriends,
+    friends: state.main.user.friends,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {};
+  return {
+    getUser: () => dispatch(getUser()),
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Friends);

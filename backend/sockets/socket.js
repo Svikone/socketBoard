@@ -3,13 +3,6 @@ const ExpectedFriends = require('../models/expectedFriends');
 
 module.exports = (io) => { 
 
-    // friendEmit = (possibleАriends) => {
-    //     socket.emit('friendInvitesList', {
-    //         message: "Вас хочит добавить в друзья",
-    //         possibleАriends
-    //     });
-    // }
-
     let users = [];
     io.on('connection', async (socket) => {
         const { userId } = socket.decoded;
@@ -29,8 +22,6 @@ module.exports = (io) => {
                         message: `Вас хочит добавить в друзья `,
                         possibleАriends
                     })
-                    
-                    // await ExpectedFriends.deleteMany({ expectedFriendID: userId });
                 }
             } catch (e) {
                 
@@ -66,7 +57,7 @@ module.exports = (io) => {
                         })
                     } else if (onlineUser) {
                         const expectedFriend = new ExpectedFriends({
-                            name: user.name, expectedFriendID: friend._id
+                            name: user.name, expectedFriendID: friend._id, friendWhoAppliedId: user._id
                         })
                         await expectedFriend.save();
                         const possibleАriends = await ExpectedFriends.find({expectedFriendID: friend._id});
@@ -76,10 +67,8 @@ module.exports = (io) => {
                             possibleАriends
                         })
                     }else {
-                        console.log("db",user.name,friend._id)
-                        
                         const expectedFriend = new ExpectedFriends({
-                            name: user.name, expectedFriendID: friend._id
+                            name: user.name, expectedFriendID: friend._id, friendWhoAppliedId: user._id
                         })
                         await expectedFriend.save();
                     }
@@ -89,35 +78,20 @@ module.exports = (io) => {
             }
         })
 
+        socket.on('addingToFriends',  async (data) => {
+            const activeApplication = await ExpectedFriends.findOne({ friendWhoAppliedId: data.idFriend, expectedFriendID: userId });
+            await ExpectedFriends.deleteOne({ friendWhoAppliedId: data.idFriend, expectedFriendID: userId });
+            if (data.status) {
+                const user = await User.findOne({ _id: userId });
+                const friend = await User.findOne({ _id: data.idFriend });
 
-
-
-        // socket.on('friendRequest', async (req, res) => {
-        //     try {
-        //         const friend = await User.findOne({name: req.nameFriend});
-        //         const user = await User.findOne({_id: id});
-        //         if (!user || !friend) {
-        //             socket.emit('addToFriends', {
-        //                 message: 'Чтото пошло не так',
-        //             });
-        //         }
-
-        //         friends = user.friends.some((f) => f.name === "ao")
-        //         if (!friends) {
-        //             user.friends.push({_id: friends._id, name: friends.name})
-        //             await user.save();
-        //             socket.broadcast.emit('addToFriends', {
-        //                 message: 'dfc [jnzn lj,fdbnm d lhepmz',
-        //             });
-        //         }
-        //         socket.emit('addToFriends', {
-        //             message: 'У вас уже есть такой друг',
-        //         });
-                
-        //     } catch (e) {
-        //         console.log(e);
-        //     }           
-        // })
+                user.friends.push({ _id: friend._id, name: friend.name })
+                friend.friends.push({ _id: user._id, name: user.name })
+                await user.save();
+                await friend.save();
+            }
+            
+        })
         
     })
 

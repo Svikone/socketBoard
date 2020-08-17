@@ -11,3 +11,21 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.navbar {
+  .nav-link {
+    display: flex;
+    z-index: 999 !important;
+    .countFriends {
+      position: absolute;
+      width: 25px;
+      height: 25px;
+      margin-left: 51px;
+      margin-top: -9px;
+      z-index: 0 !important;
+      background: #f44336;
+      color: white;
+      border-radius: 50%;
+    }
+  }
+}

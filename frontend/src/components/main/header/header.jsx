@@ -25,8 +25,15 @@ class Header extends React.Component {
         <Navbar.Brand href="#home">Navbar</Navbar.Brand>
         <Nav className="mr-auto">
           <Nav.Link href="#home">Home</Nav.Link>
-          <Nav.Link href="#features">Features</Nav.Link>
-          <Link to="main/friends" className="nav-link">
+          <Link to="/main/board" className="nav-link">
+            Доска
+          </Link>
+          <Link to="/main/friends" className="nav-link">
+            {this.props.countFriends ? (
+              <div className="countFriends">
+                {this.props.countFriends.length}
+              </div>
+            ) : null}
             Друзья
           </Link>
         </Nav>
@@ -61,7 +68,7 @@ class Header extends React.Component {
 }
 const mapStateToProps = (state) => {
   return {
-    // error: state.login,
+    countFriends: state.main.friends.possibleАriends,
   };
 };
 

@@ -2,19 +2,31 @@ import React from "react";
 import { connect } from "react-redux";
 import { ListGroup, Card, Button } from "react-bootstrap";
 import "./item.scss";
+import { addingToFriends } from "../../../../store/main/action";
 
 const Item = (props) => {
+  console.log(props);
   return (
     <div className="">
       <ListGroup.Item>
         <div>
-          <span>vo</span> хочет добавить вас в друзья
+          <span>{props.item.name}</span> хочет добавить вас в друзья
         </div>
         <div className="btnContainer">
-          <Button type="submit" variant="primary">
+          <Button
+            variant="primary"
+            onClick={() =>
+              props.addingToFriends(true, props.item.friendWhoAppliedId)
+            }
+          >
             Добавить
           </Button>
-          <Button type="submit" variant="danger">
+          <Button
+            variant="danger"
+            onClick={() =>
+              props.addingToFriends(false, props.item.friendWhoAppliedId)
+            }
+          >
             Отклонить
           </Button>
         </div>
@@ -24,6 +36,8 @@ const Item = (props) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {};
+  return {
+    addingToFriends: (value, id) => dispatch(addingToFriends(value, id)),
+  };
 };
 export default connect(null, mapDispatchToProps)(Item);

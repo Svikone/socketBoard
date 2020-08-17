@@ -42,4 +42,20 @@ exports.login = async (req, res) => {
   }
 };
 
+exports.getUser = async (req, res) => {
+  
+  try {
+    const { userId } = req.user;
+    const user = await User.findOne({ _id: userId });
+    console.log(user)
+    if (user) {
+      return res.json({ user});
+    }
+    return res.status(500).json({message: 'error'})
+
+  } catch (e) {
+    res.send(e);
+  }
+};
+
 

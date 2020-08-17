@@ -14,7 +14,7 @@ const jwt = require('jsonwebtoken');
 io.use((socket, next) => {
   const json_token = socket.handshake.query.token;
   if (json_token) {
-    jwt.verify(json_token, 'hello world', (err, decoded) => {
+    jwt.verify(json_token, process.env.SECRETKEY, (err, decoded) => {
       if (err) return next(new Error('Authentication error'));
       socket.decoded = decoded;
 
@@ -32,6 +32,8 @@ app.use (bodyParser.json ({
 	limit: "50mb"
 }));
 app.use('/api/user', require('./routes/user'));
+app.use('/api/board', require('./routes/board'));
+
 
 const port = process.env.PORT || 9000;
 async function start() {
