@@ -6,6 +6,6 @@ const router = Router();
 
 router.post('/register', Controller.signup);
 router.post('/login', Controller.login);
-router.get('/get', mw, Controller.getUser);
+router.get('/', mw, Controller.getUser);
 
 module.exports = router;
