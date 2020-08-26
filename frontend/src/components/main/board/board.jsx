@@ -2,15 +2,19 @@ import React from "react";
 import "./board.scss";
 import { Accordion, Card, Button, Form } from "react-bootstrap";
 import { Formik } from "formik";
-import { createBoard } from "../../../store/main/action.js";
+import { createBoard, getBoard } from "../../../store/main/action.js";
 import { connect } from "react-redux";
+import ItemBoard from "./itemsBoard/itemBoard";
+import { Link } from "react-router-dom";
 
 class Board extends React.Component {
   constructor(props) {
     super(props);
     this.onSubmit = this.onSubmit.bind(this);
   }
-  componentDidMount() {}
+  componentDidMount() {
+    this.props.getBoard();
+  }
 
   onSubmit(values, { resetForm }) {
     this.props.createBoard(values);
@@ -20,7 +24,7 @@ class Board extends React.Component {
   render() {
     return (
       <div className="">
-        <Accordion defaultActiveKey="0">
+        <Accordion>
           <Card>
             <Card.Header>
               <Accordion.Toggle as={Button} variant="link" eventKey="1">
@@ -66,15 +70,34 @@ class Board extends React.Component {
             </Accordion.Collapse>
           </Card>
         </Accordion>
+        {this.props.boards.length ? (
+          <div className="">
+            <h2>Доски</h2>
+            {this.props.boards.map((item, i) => (
+              <Link to={`/main/board/${item._id}`} key={i}>
+                <ItemBoard key={i} item={item} />
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <h2>Вы еще не создали доску</h2>
+        )}
       </div>
     );
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapStateToProps = (state) => {
   return {
-    createBoard: (data) => dispatch(createBoard(data)),
+    boards: state.main.board,
   };
 };
 
-export default connect(null, mapDispatchToProps)(Board);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    createBoard: (data) => dispatch(createBoard(data)),
+    getBoard: () => dispatch(getBoard()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Board);

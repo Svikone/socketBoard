@@ -4,19 +4,19 @@ import { ListGroup, Card, Button } from "react-bootstrap";
 import Item from "./item/item";
 import ItemFriends from "./itemFriends/itemFriend";
 import "./friends.scss";
-import { getUser } from "../../../store/main/action";
+import { getUser, addingToFriendsSuccess } from "../../../store/main/action";
 
 class Friends extends React.Component {
   componentDidMount() {
     this.props.getUser();
+    this.props.addingToFriendsSuccess();
   }
 
   render() {
-    console.log(this.props.friends);
     return (
       <div className="">
         <Card>
-          {this.props.friendRequestItems ? (
+          {this.props.friendRequestItems.length ? (
             <div className="friendsRequest">
               <h2>Возможные друзья</h2>
               <ListGroup variant="flush">
@@ -48,14 +48,16 @@ class Friends extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    friendRequestItems: state.main.friends.possibleАriends,
+    friendRequestItems: state.main.friends,
     friends: state.main.user.friends,
+    // test: state.main.friends,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     getUser: () => dispatch(getUser()),
+    addingToFriendsSuccess: () => dispatch(addingToFriendsSuccess()),
   };
 };
 

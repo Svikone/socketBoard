@@ -5,7 +5,13 @@ export const POSSIBLE_FRIENDS = "POSSIBLE_FRIENDS";
 export const ADDING_TO_FRIENDS = "ADDING_TO_FRIENDS";
 export const GET_USER = "GET_USER";
 export const GET_USER_SUCCESS = "GET_USER_SUCCESS";
-export const BOARD="BOARD"
+export const BOARD = "BOARD";
+export const GET_BOARD = "GET_BOARD";
+export const GET_BOARD_SUCCESS = "GET_BOARD_SUCCESS";
+export const ADDING_TO_FRIENDS_SUCCESS = "ADDING_TO_FRIENDS_SUCCESS";
+export const CREATE_TASK = "CREATE_TASK";
+export const GET_TASK = "GET_TASK";
+export const GET_TASK_SUCCESS = "GET_TASK_SUCCESS";
 
 export const friendRequest = (name) => {
     return {
@@ -60,5 +66,45 @@ export const createBoard = (nameBoard) => {
     return {
         type: BOARD,
         payload: nameBoard,
+    }
+}
+
+export const getBoard = () => {
+    return {
+        type: GET_BOARD,
+    }
+}
+
+export const getBoardSuccess = (board) => {
+    return {
+        type: GET_BOARD_SUCCESS,
+        payload: board
+    }
+}
+
+export const addingToFriendsSuccess = () => {
+    return {
+        type: ADDING_TO_FRIENDS_SUCCESS,
+    }
+}
+
+export const createTask = (task) => {
+    return {
+        type: CREATE_TASK,
+        payload: task
+    }
+}
+
+export const getTask = (board_id) => {
+    return {
+        type: GET_TASK,
+        payload: board_id
+    }
+}
+
+export const getTaskSuccess = (tasks) => {
+    return {
+        type: GET_TASK_SUCCESS,
+        payload: tasks
     }
 }

@@ -29,7 +29,7 @@ class Header extends React.Component {
             Доска
           </Link>
           <Link to="/main/friends" className="nav-link">
-            {this.props.countFriends ? (
+            {this.props.countFriends.length ? (
               <div className="countFriends">
                 {this.props.countFriends.length}
               </div>
@@ -68,7 +68,7 @@ class Header extends React.Component {
 }
 const mapStateToProps = (state) => {
   return {
-    countFriends: state.main.friends.possibleАriends,
+    countFriends: state.main.friends,
   };
 };
 

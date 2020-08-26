@@ -5,7 +5,6 @@ import "./item.scss";
 import { addingToFriends } from "../../../../store/main/action";
 
 const Item = (props) => {
-  console.log(props);
   return (
     <div className="">
       <ListGroup.Item>

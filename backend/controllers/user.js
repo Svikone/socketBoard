@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const ExpectedFriends = require('../models/expectedFriends');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -46,8 +47,11 @@ exports.getUser = async (req, res) => {
   
   try {
     const { userId } = req.user;
-    const user = await User.findOne({ _id: userId });
-    console.log(user)
+    const user = await User.findOne({ _id: userId }).select("-password").lean()
+
+    const expectedFriend = await ExpectedFriends.find({ expectedFriendID: userId })
+    user.expectedFriend = expectedFriend
+    console.log("expectedFriend",user)
     if (user) {
       return res.json({ user});
     }

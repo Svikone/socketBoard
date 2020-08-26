@@ -79,7 +79,6 @@ module.exports = (io) => {
         })
 
         socket.on('addingToFriends',  async (data) => {
-            const activeApplication = await ExpectedFriends.findOne({ friendWhoAppliedId: data.idFriend, expectedFriendID: userId });
             await ExpectedFriends.deleteOne({ friendWhoAppliedId: data.idFriend, expectedFriendID: userId });
             if (data.status) {
                 const user = await User.findOne({ _id: userId });
@@ -89,7 +88,10 @@ module.exports = (io) => {
                 friend.friends.push({ _id: user._id, name: user.name })
                 await user.save();
                 await friend.save();
+                
             }
+            io.to(socket.id).emit('addingToFriendsSuccess', {
+            })
             
         })
         

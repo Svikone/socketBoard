@@ -34,7 +34,6 @@ app.use (bodyParser.json ({
 app.use('/api/user', require('./routes/user'));
 app.use('/api/board', require('./routes/board'));
 
-
 const port = process.env.PORT || 9000;
 async function start() {
   try {
