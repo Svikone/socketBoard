@@ -45,14 +45,14 @@ function* getBoardWorker() {
   }
 }
 
-function* createTaskWorker(task) {
-  try {
-    const data = yield call(httpServices.post, "board/task/create", task.payload)
-    // yield put(actions.getBoardSuccess(data.data.board))
-  } 
-  catch (error) {
-  }
-}
+// function* createTaskWorker(task) {
+//   try {
+//     const data = yield call(httpServices.post, "board/task/create", task.payload)
+//     // yield put(actions.getBoardSuccess(data.data.board))
+//   } 
+//   catch (error) {
+//   }
+// }
 
 
 
@@ -88,6 +88,7 @@ function* addingToFriendsSuccessdWorker() {
   });
 }
 
+
 function* connectToBoardWorker(board_id) {
   socket.removeAllListeners('listenBoard')
   yield socket.on('listenBoard', (response) => {
@@ -100,6 +101,12 @@ function* connectToBoardWorker(board_id) {
 
 function* socketMoveWorker(data) {
   yield socket.emit('socketMove', {board_id: data.payload, tasks: data.tasks});
+}
+
+
+function* socketCreateTaskWorker(data) {
+  yield socket.emit('socketCreateTask', {task: data.payload});
+
 }
 
 
@@ -116,10 +123,10 @@ export function* watchLoadData() {
   yield takeEvery(actions.BOARD, boardWorker)
   yield takeEvery(actions.GET_BOARD, getBoardWorker)
   yield takeEvery(actions.ADDING_TO_FRIENDS_SUCCESS, addingToFriendsSuccessdWorker)
-  yield takeEvery(actions.CREATE_TASK, createTaskWorker)
+  yield takeEvery(actions.CREATE_TASK, socketCreateTaskWorker)
   yield takeEvery(actions.CONNECT_TO_BOARD, connectToBoardWorker)
   yield takeEvery(actions.SOCKET_MOVE, socketMoveWorker)
-
+ 
 }
 
 

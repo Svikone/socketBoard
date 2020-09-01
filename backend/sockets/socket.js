@@ -107,15 +107,7 @@ module.exports = (io) => {
             })
         })
 
-       // async function listenBoard(board_id) {
-        //     const board = await Board.findOne({ _id: board_id })
-        //     socket.emit('listenBoard', {
-        //         board: board,
-        //     })
-        // }
-
         socket.on('socketMove', async (data) => {
-            console.log("test",data.tasks)
             const { board_id, tasks } = data;
             const board = await Board.findOne({ _id: board_id })
             board.tasks = tasks
@@ -125,7 +117,18 @@ module.exports = (io) => {
                 board: board,
             })
         })
-        
+
+        socket.on('socketCreateTask', async (data) => {
+            console.log(data.task)
+            const { _id, name, description } = data.task;
+            const board = await Board.findOne({ _id })
+            board.tasks.push({ name, description, state: "In progress" })
+            await board.save();
+
+            io.to(_id).emit('listenBoard', {
+                board: board,
+            })
+        })
     })
 
 }

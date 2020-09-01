@@ -8,7 +8,7 @@ const defaultState = {
     user: {},
     nameBoard: "",
     board: {},
-    task: {},
+    // task: {},
     board_id: "",
     selectedBoard: {
         name: String,
@@ -75,7 +75,7 @@ export const mainReducer = (state = defaultState, action) => {
         case actions.CREATE_TASK:
         return {
             ...state,
-            task: action.payload
+            // task: action.payload
         } 
         case actions.CONNECT_TO_BOARD:
         return {
