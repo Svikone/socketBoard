@@ -10,8 +10,9 @@ export const GET_BOARD = "GET_BOARD";
 export const GET_BOARD_SUCCESS = "GET_BOARD_SUCCESS";
 export const ADDING_TO_FRIENDS_SUCCESS = "ADDING_TO_FRIENDS_SUCCESS";
 export const CREATE_TASK = "CREATE_TASK";
-export const GET_TASK = "GET_TASK";
-export const GET_TASK_SUCCESS = "GET_TASK_SUCCESS";
+export const CONNECT_TO_BOARD = "CONNECT_TO_BOARD";
+export const CONNECT_TO_BOARD_SUCCESS = "CONNECT_TO_BOARD_SUCCESS";
+export const SOCKET_MOVE = "SOCKET_MOVE"
 
 export const friendRequest = (name) => {
     return {
@@ -95,16 +96,25 @@ export const createTask = (task) => {
     }
 }
 
-export const getTask = (board_id) => {
+export const connectToBoard = (board_id) => {
     return {
-        type: GET_TASK,
+        type: CONNECT_TO_BOARD,
         payload: board_id
     }
 }
 
-export const getTaskSuccess = (tasks) => {
+export const connectToBoardSuccess = (board) => {
     return {
-        type: GET_TASK_SUCCESS,
-        payload: tasks
+        type: CONNECT_TO_BOARD_SUCCESS,
+        payload: board
     }
 }
+
+export const socketMove = (board_id, tasks) => {
+    return {
+        type: SOCKET_MOVE,
+        payload: board_id,
+        tasks
+    }
+}
+

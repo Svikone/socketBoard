@@ -37,12 +37,10 @@ exports.createTask = async (req, res) => {
         const { userId } = req.user;
         const { _id, name, description } = req.body;
         const board = await Board.findOne({ _id })
-        console.log("board",board)
         if (!board) {
             return res.status(500).json({message: 'your application is empty'})
         }
-        board.tasks.push({ name, description })
-        console.log("board2",board)
+        board.tasks.push({ name, description, state: "In progress" })
 
         board.save()
         return res.status(200).json({message: "task added"})

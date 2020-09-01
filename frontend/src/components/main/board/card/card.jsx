@@ -2,9 +2,11 @@ import React from "react";
 import { connect } from "react-redux";
 import { Formik } from "formik";
 import { Button, Form } from "react-bootstrap";
-import { createTask, getTask } from "../../../../store/main/action";
+import * as actions from "../../../../store/main/action";
 import history from "../../../../shared/history";
 import ItemTask from "./itemsTask/itemTask";
+import "./card.scss";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 class Card extends React.Component {
   constructor(props) {
@@ -12,14 +14,40 @@ class Card extends React.Component {
     this.onSubmit = this.onSubmit.bind(this);
   }
   componentDidMount() {
-    console.log(this.props.match.params.id);
-    this.props.getTask(this.props.match.params.id);
+    this.props.connectToBoard(this.props.match.params.id);
   }
 
   onSubmit = (values, { resetForm }) => {
     values._id = this.props.match.params.id;
     this.props.createTask(values);
     resetForm();
+  };
+
+  onDragEnd = (result) => {
+    const { destination, source, reason } = result;
+    const droppedTasks = this.props.tasks[source.index];
+
+    console.log(result);
+    if (!destination || reason === "CANCEL") {
+      return;
+    }
+
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+    if (source.droppableId != destination.droppableId) {
+      this.props.tasks[source.index].state = destination.droppableId;
+      this.props.tasks.splice(source.index, 1);
+      this.props.tasks.splice(destination.index, 0, droppedTasks);
+      this.props.socketMove(this.props.match.params.id, this.props.tasks);
+      return;
+    }
+    this.props.tasks.splice(source.index, 1);
+    this.props.tasks.splice(destination.index, 0, droppedTasks);
+    this.props.socketMove(this.props.match.params.id, this.props.tasks);
   };
 
   render() {
@@ -66,9 +94,32 @@ class Card extends React.Component {
             </Formik>
 
             <h2>ТАСКИ</h2>
-            {this.props.tasks.map((item, i) => (
-              <ItemTask key={i} item={item} />
-            ))}
+            <div className="container">
+              <DragDropContext onDragEnd={this.onDragEnd}>
+                {this.props.stateTasks.map((item, i) => (
+                  <div className="card closed" key={i}>
+                    <div className="title green">{item}</div>
+                    <Droppable droppableId={item + ""}>
+                      {(provided) => (
+                        <div
+                          {...provided.draggableProps}
+                          provided={provided}
+                          {...provided.dragHandleProps}
+                          ref={provided.innerRef}
+                        >
+                          {this.props.tasks.map((item2, i) =>
+                            item2.state === item ? (
+                              <ItemTask key={i} index={i} item={item2} />
+                            ) : null
+                          )}
+                          {provided.placeholder}
+                        </div>
+                      )}
+                    </Droppable>
+                  </div>
+                ))}
+              </DragDropContext>
+            </div>
           </div>
         ) : (
           <h2>Вы еще не создали доску</h2>
@@ -80,14 +131,17 @@ class Card extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    tasks: state.main.tasks,
+    tasks: state.main.selectedBoard.tasks,
+    stateTasks: state.main.selectedBoard.state,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    createTask: (values) => dispatch(createTask(values)),
-    getTask: (values) => dispatch(getTask(values)),
+    createTask: (values) => dispatch(actions.createTask(values)),
+    connectToBoard: (values) => dispatch(actions.connectToBoard(values)),
+    socketMove: (boardId, tasks) =>
+      dispatch(actions.socketMove(boardId, tasks)),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Card);

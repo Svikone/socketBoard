@@ -10,7 +10,12 @@ const defaultState = {
     board: {},
     task: {},
     board_id: "",
-    tasks: []
+    selectedBoard: {
+        name: String,
+        state: [],
+        tasks: [],
+        users: []
+    }
 }
 
 export const mainReducer = (state = defaultState, action) => {
@@ -72,15 +77,18 @@ export const mainReducer = (state = defaultState, action) => {
             ...state,
             task: action.payload
         } 
-        case actions.GET_TASK:
+        case actions.CONNECT_TO_BOARD:
         return {
             ...state,
-            board_id: action.payload 
         }
-        case actions.GET_TASK_SUCCESS:
+        case actions.CONNECT_TO_BOARD_SUCCESS:
         return {
             ...state,
-            tasks: action.payload 
+            selectedBoard: action.payload 
+        }
+        case actions.SOCKET_MOVE:
+        return {
+            ...state,
         }
     }
   return state;

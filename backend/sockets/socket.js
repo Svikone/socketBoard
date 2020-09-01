@@ -1,5 +1,7 @@
 const User = require('../models/user');
 const ExpectedFriends = require('../models/expectedFriends');
+const Board = require('../models/board');
+
 
 module.exports = (io) => { 
 
@@ -15,7 +17,6 @@ module.exports = (io) => {
         } else {
             try {
                 const possibleАriends = await ExpectedFriends.find({expectedFriendID: userId});
-                console.log("possible:",possibleАriends)
                 if (possibleАriends.length > 0) {
                     console.log("socketId",socket.id)
                     io.to(socket.id).emit('friendInvitesList', {
@@ -28,7 +29,6 @@ module.exports = (io) => {
             }
         }
         users.push({ userId, socketId: socket.id })
-        console.log(users)
 
         socket.on('disconnect', function () {
             users = users.filter(user => user.userId != userId);
@@ -93,6 +93,37 @@ module.exports = (io) => {
             io.to(socket.id).emit('addingToFriendsSuccess', {
             })
             
+        })
+
+        socket.on('connectToBoard',  async (data) => {
+            const board_id = data.board_id;
+
+            const board = await Board.findOne({ _id: board_id })
+            console.log(board_id)
+            socket.join(board_id);
+            
+            socket.emit('listenBoard', {
+                board: board,
+            })
+        })
+
+       // async function listenBoard(board_id) {
+        //     const board = await Board.findOne({ _id: board_id })
+        //     socket.emit('listenBoard', {
+        //         board: board,
+        //     })
+        // }
+
+        socket.on('socketMove', async (data) => {
+            console.log("test",data.tasks)
+            const { board_id, tasks } = data;
+            const board = await Board.findOne({ _id: board_id })
+            board.tasks = tasks
+            await board.save();
+
+            io.to(board_id).emit('listenBoard', {
+                board: board,
+            })
         })
         
     })

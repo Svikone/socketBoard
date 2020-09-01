@@ -19,7 +19,7 @@ function* loginWorker(user) {
 
 function* getUserWorker() {
   try {
-    const data = yield call(httpServices.get, "user/get",)
+    const data = yield call(httpServices.get, "user",)
     yield put(actions.getUserSuccess(data.data.user))
   } 
   catch (error) {
@@ -54,14 +54,7 @@ function* createTaskWorker(task) {
   }
 }
 
-function* getTaskWorker(board_id) {
-  try {
-    const data = yield call(httpServices.get, `board/task/get/${board_id.payload}`)
-    yield put(actions.getTaskSuccess(data.data.tasks))
-  } 
-  catch (error) {
-  }
-}
+
 
 
 
@@ -95,6 +88,20 @@ function* addingToFriendsSuccessdWorker() {
   });
 }
 
+function* connectToBoardWorker(board_id) {
+  socket.removeAllListeners('listenBoard')
+  yield socket.on('listenBoard', (response) => {
+     if (response) {
+      store.dispatch(actions.connectToBoardSuccess(response.board))
+    }
+  });
+  yield socket.emit('connectToBoard', {board_id: board_id.payload});
+}
+
+function* socketMoveWorker(data) {
+  yield socket.emit('socketMove', {board_id: data.payload, tasks: data.tasks});
+}
+
 
 
 
@@ -110,7 +117,8 @@ export function* watchLoadData() {
   yield takeEvery(actions.GET_BOARD, getBoardWorker)
   yield takeEvery(actions.ADDING_TO_FRIENDS_SUCCESS, addingToFriendsSuccessdWorker)
   yield takeEvery(actions.CREATE_TASK, createTaskWorker)
-  yield takeEvery(actions.GET_TASK, getTaskWorker)
+  yield takeEvery(actions.CONNECT_TO_BOARD, connectToBoardWorker)
+  yield takeEvery(actions.SOCKET_MOVE, socketMoveWorker)
 
 }
 
