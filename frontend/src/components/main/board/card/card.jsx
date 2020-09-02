@@ -53,77 +53,78 @@ class Card extends React.Component {
   render() {
     return (
       <div className="">
-        {this.props.tasks.length ? (
-          <div className="">
-            <Formik
-              initialValues={{
-                name: "",
-                description: "",
-              }}
-              onSubmit={this.onSubmit}
-            >
-              {({ errors, handleSubmit, handleChange, touched, values }) => (
-                <Form inline onSubmit={handleSubmit}>
-                  <Form.Group controlId="formName">
-                    <Form.Control
-                      value={values.name}
-                      name="name"
-                      type="text"
-                      placeholder="Name task"
-                      className="mr-sm-2"
-                      onChange={handleChange}
-                    />
-                  </Form.Group>
+        <div className="">
+          <Formik
+            initialValues={{
+              name: "",
+              description: "",
+            }}
+            onSubmit={this.onSubmit}
+          >
+            {({ errors, handleSubmit, handleChange, touched, values }) => (
+              <Form inline onSubmit={handleSubmit}>
+                <Form.Group controlId="formName">
+                  <Form.Control
+                    value={values.name}
+                    name="name"
+                    type="text"
+                    placeholder="Name task"
+                    className="mr-sm-2"
+                    onChange={handleChange}
+                  />
+                </Form.Group>
 
-                  <Form.Group controlId="formDescription">
-                    <Form.Control
-                      value={values.description}
-                      name="description"
-                      type="text"
-                      placeholder="Description"
-                      className="mr-sm-2"
-                      onChange={handleChange}
-                    />
-                  </Form.Group>
+                <Form.Group controlId="formDescription">
+                  <Form.Control
+                    value={values.description}
+                    name="description"
+                    type="text"
+                    placeholder="Description"
+                    className="mr-sm-2"
+                    onChange={handleChange}
+                  />
+                </Form.Group>
 
-                  <Button type="submit" variant="primary">
-                    Add
-                  </Button>
-                </Form>
-              )}
-            </Formik>
-
-            <h2>ТАСКИ</h2>
+                <Button type="submit" variant="primary">
+                  Add
+                </Button>
+              </Form>
+            )}
+          </Formik>
+          {this.props.tasks.length ? (
             <div className="container">
-              <DragDropContext onDragEnd={this.onDragEnd}>
-                {this.props.stateTasks.map((item, i) => (
-                  <div className="card closed" key={i}>
-                    <div className="title green">{item}</div>
-                    <Droppable droppableId={item + ""}>
-                      {(provided) => (
-                        <div
-                          {...provided.draggableProps}
-                          provided={provided}
-                          {...provided.dragHandleProps}
-                          ref={provided.innerRef}
-                        >
-                          {this.props.tasks.map((item2, i) =>
-                            item2.state === item ? (
-                              <ItemTask key={i} index={i} item={item2} />
-                            ) : null
-                          )}
-                          {provided.placeholder}
-                        </div>
-                      )}
-                    </Droppable>
-                  </div>
-                ))}
-              </DragDropContext>
+              <h2>ТАСКИ</h2>
+              <div className="wrapper">
+                <DragDropContext onDragEnd={this.onDragEnd}>
+                  {this.props.stateTasks.map((item, i) => (
+                    <div className="card closed" key={i}>
+                      <div className="title green">{item}</div>
+                      <Droppable droppableId={item + ""}>
+                        {(provided) => (
+                          <div
+                            {...provided.draggableProps}
+                            provided={provided}
+                            {...provided.dragHandleProps}
+                            ref={provided.innerRef}
+                          >
+                            {this.props.tasks.map((item2, i) =>
+                              item2.state === item ? (
+                                <ItemTask key={i} index={i} item={item2} />
+                              ) : null
+                            )}
+                            {provided.placeholder}
+                          </div>
+                        )}
+                      </Droppable>
+                    </div>
+                  ))}
+                </DragDropContext>
+              </div>
             </div>
-          </div>
-        ) : (
-          <h2>Вы еще не создали доску</h2>
-        )}
+          ) : (
+            <h2>Вы еще не создали доску</h2>
+          )}
+        </div>
       </div>
     );
   }

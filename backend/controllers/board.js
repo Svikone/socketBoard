@@ -5,7 +5,7 @@ exports.createBoard = async (req, res) => {
         const { userId } = req.user;
         const { name } = req.body;
         const board = new Board({
-            name, users: [{ _id: userId }]
+            name, users: [{ _id: userId }], state: "In progress"
         });
     await board.save();
     return res.status(200).json({message: 'create board is successful'})
