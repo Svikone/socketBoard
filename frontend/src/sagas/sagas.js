@@ -26,11 +26,12 @@ function* getUserWorker() {
   }
 }
 
-function* boardWorker(board) {
+function* createBoardWorker(board) {
   try {
-    const data = yield call(httpServices.post, "board/create",board.payload)
-    // yield put(actions.getUserSuccess(data.data.user))
-    console.log(data)
+    const data = yield call(httpServices.post, "board/create", board.payload)
+    if (data.status === 200) {
+      yield put(actions.getBoard())
+    }
   } 
   catch (error) {
   }
@@ -120,7 +121,7 @@ export function* watchLoadData() {
   yield takeEvery(actions.FRIEND_REQUEST_SUCCESS, friendRequestSuccessWorker)
   yield takeEvery(actions.ADDING_TO_FRIENDS, addingToFriendsWorker)
   yield takeEvery(actions.GET_USER, getUserWorker)
-  yield takeEvery(actions.BOARD, boardWorker)
+  yield takeEvery(actions.BOARD, createBoardWorker)
   yield takeEvery(actions.GET_BOARD, getBoardWorker)
   yield takeEvery(actions.ADDING_TO_FRIENDS_SUCCESS, addingToFriendsSuccessdWorker)
   yield takeEvery(actions.CREATE_TASK, socketCreateTaskWorker)
